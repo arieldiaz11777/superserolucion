@@ -1,52 +1,53 @@
-document.getElementById('enhanceButton').addEventListener('click', async function () {
-    const imgElement = document.getElementById('originalImage');
-    const errorElement = document.createElement('p');
-    errorElement.style.color = 'red';
+document.getElementById('upload').addEventListener('change', handleImageUpload);
+document.getElementById('enhanceBtn').addEventListener('click', enhanceImageFromInput);
 
-    try {
-        if (imgElement.src) {
-            // Mostramos un mensaje de cargando mientras se mejora la imagen
-            errorElement.textContent = 'Cargando modelo y mejorando imagen...';
-            document.body.appendChild(errorElement);
+let model; // Variable global para almacenar el modelo
 
-            // Cargar el modelo de TensorFlow.js (reemplaza la URL por la del modelo correcto)
-            const model = await tf.loadGraphModel('URL_DEL_MODELO/model.json');
+async function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-            // Convertir la imagen a un tensor
-            const inputTensor = tf.browser.fromPixels(imgElement).expandDims(0).toFloat();
-            
-            // Realizar la predicción con el modelo
-            const enhancedImageTensor = model.predict(inputTensor);
-            
-            // Quitar la dimensión extra del tensor
-            const enhancedImage = enhancedImageTensor.squeeze();
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    img.onload = () => {
+        // Habilitar el botón de mejora
+        document.getElementById('enhanceBtn').disabled = false;
+        document.getElementById('canvas').width = img.width;
+        document.getElementById('canvas').height = img.height;
 
-            // Crear un canvas para mostrar la imagen mejorada
-            const canvas = document.createElement('canvas');
-            canvas.width = enhancedImage.shape[1];
-            canvas.height = enhancedImage.shape[0];
-            const ctx = canvas.getContext('2d');
+        const ctx = document.getElementById('canvas').getContext('2d');
+        ctx.drawImage(img, 0, 0);
+    };
+}
 
-            // Convertir el tensor mejorado en una imagen visible
-            const imageData = new ImageData(
-                new Uint8ClampedArray(enhancedImage.dataSync()),
-                enhancedImage.shape[1],
-                enhancedImage.shape[0]
-            );
-            ctx.putImageData(imageData, 0, 0);
+async function enhanceImageFromInput() {
+    document.getElementById('loadingMessage').classList.remove('hidden');
 
-            // Mostrar la imagen mejorada en la página
-            document.getElementById('enhancedImage').src = canvas.toDataURL();
-
-            // Limpiar el mensaje de cargando
-            errorElement.textContent = '';
-        } else {
-            alert("Primero sube una imagen.");
-        }
-    } catch (error) {
-        // Mostrar el error en la página
-        errorElement.textContent = 'Error al procesar la imagen: ' + error.message;
-        document.body.appendChild(errorElement);
-        console.error('Error:', error); // También registrar el error en la consola
+    // Si el modelo no está cargado, cárgalo
+    if (!model) {
+        model = await tf.loadGraphModel('https://tfhub.dev/captain-pool/esrgan-tf2/1');
     }
-});
+
+    const canvas = document.getElementById('canvas');
+    const imgTensor = tf.browser.fromPixels(canvas);
+    const enhancedTensor = await enhanceImage(imgTensor);
+    const outputImage = document.getElementById('enhancedImage');
+
+    // Mostrar imagen mejorada
+    await tf.browser.toPixels(enhancedTensor, canvas);
+    outputImage.src = canvas.toDataURL();
+
+    // Mostrar el contenedor de salida
+    document.getElementById('output').classList.remove('hidden');
+    document.getElementById('loadingMessage').classList.add('hidden'); // Ocultar mensaje de carga
+}
+
+async function enhanceImage(imgTensor) {
+    const resizedImage = tf.image.resizeBilinear(imgTensor, [256, 256]); // Redimensionar si es necesario
+    const normalizedImage = resizedImage.div(255.0); // Normalizar
+    const input = normalizedImage.expandDims(0); // Añadir dimensión
+
+    // Mejorar la imagen
+    const output = model.predict(input);
+    return output.squeeze().clipByValue(0, 1); // Procesar la salida
+}
