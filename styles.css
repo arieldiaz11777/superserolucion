@@ -3,39 +3,46 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     height: 100vh;
-    background-color: #f4f4f4;
     margin: 0;
+    background-color: #f0f0f0;
 }
 
 .container {
     text-align: center;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
 }
 
-h1 {
-    color: #333;
-}
-
-#imageContainer {
-    display: flex;
-    justify-content: space-around;
-    margin: 20px 0;
-}
-
-#imageContainer img {
-    max-width: 45%;
-    max-height: 300px;
-    border: 2px solid #ccc;
+input[type="file"] {
+    margin-bottom: 20px;
 }
 
 button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 20px;
+    padding: 10px 15px;
+    margin-bottom: 20px;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #218838;
+#output {
+    margin-top: 20px;
+}
+
+#loadingMessage {
+    margin-top: 10px;
+    font-weight: bold;
+    color: blue;
+}
+
+.hidden {
+    display: none;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
 }
