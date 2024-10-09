@@ -1,28 +1,27 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mejora de Imágenes con TensorFlow.js</title>
+    <title>Mejora de Imágenes con ESRGAN</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
     <div class="container">
-        <h1>Mejorar Imágenes</h1>
-        <input type="file" id="upload" accept="image/*">
-        <button id="enhanceBtn" disabled>Mejorar Imagen</button>
-        <div id="loadingMessage" class="hidden">Cargando el modelo...</div>
-        <canvas id="canvas" style="display:none;"></canvas>
-        <div id="output" class="hidden">
+        <h1>Mejorar Imágenes con ESRGAN</h1>
+        <input type="file" id="imageInput" accept="image/*">
+        <button id="processBtn">Mejorar Imagen</button>
+        <div id="loadingMessage" class="hidden">Cargando modelo...</div>
+        <div id="loadingMessage2" class="hidden">Mejorando imagen...</div>
+        <div class="images">
+            <h2>Imagen Original</h2>
+            <img id="originalImage" src="" alt="Imagen Original" class="hidden">
             <h2>Imagen Mejorada</h2>
-            <img id="enhancedImage" alt="Imagen Mejorada" />
+            <img id="enhancedImage" src="" alt="Imagen Mejorada" class="hidden">
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
+    <script src="https://cors-anywhere.herokuapp.com/https://tfhub.dev/captain-pool/esrgan-tf2/1"></script>
     <script src="script.js"></script>
 </body>
-
 </html>
