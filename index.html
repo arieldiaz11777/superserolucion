@@ -1,28 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mejora de Calidad de Imagen</title>
+    <title>Mejora de Imágenes con TensorFlow.js</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <div class="container">
-        <h1>Mejora la Calidad de tu Imagen</h1>
-        <input type="file" id="imageInput" accept="image/*">
-        <div id="imageContainer">
-            <img id="originalImage" alt="Imagen Original" />
+        <h1>Mejorar Imágenes</h1>
+        <input type="file" id="upload" accept="image/*">
+        <button id="enhanceBtn" disabled>Mejorar Imagen</button>
+        <div id="loadingMessage" class="hidden">Cargando el modelo...</div>
+        <canvas id="canvas" style="display:none;"></canvas>
+        <div id="output" class="hidden">
+            <h2>Imagen Mejorada</h2>
             <img id="enhancedImage" alt="Imagen Mejorada" />
         </div>
-        <button id="enhanceButton">Mejorar Imagen</button>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/super-resolution"></script>
-   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>
